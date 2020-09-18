@@ -11,7 +11,8 @@
             <section class="teacher=info">
 
               <h1 class="h2">{{ teachers[id].name }}</h1>
-              <p><span class="badge badge-secondary mr-2">{{ goals[teachers[id].goals[1]] }}</span>Рейтинг: {{ teachers[id].rating }} Ставка: {{ teachers[id].price }} / час</p>
+              <p><span class="badge badge-secondary mr-2">{{ goals[teachers[id].goals[1]] }}</span>
+                Рейтинг: {{ teachers[id].rating }} Ставка: {{ teachers[id].price }} / час</p>
               <p>{{ teachers[id].about }}</p>
 
             </section>
@@ -19,7 +20,8 @@
             <section class="available">
 
               <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
-                {% set weeks = {"mon" : "Понедельник", "tue" : "Вторник", "wed" : "Среда", "thu" : "Четверг", "fri" : "Пятница", "sat" : "Суббота", "sun" : "Воскресение"} %}
+                {% set weeks = {"mon" : "Понедельник", "tue" : "Вторник", "wed" : "Среда", "thu" : "Четверг",
+              "fri" : "Пятница", "sat" : "Суббота", "sun" : "Воскресение"} %}
                 {% for day in teachers[id].free %}
               <h6 class="mt-4">{{weeks[day]}}</h6>
               {%if teachers[id].free[day]["10:00"] == False and
@@ -33,7 +35,8 @@
               {% else %}
                   {% for time in teachers[id].free[day] %}
                     {% if teachers[id].free[day][time] %}
-              <a href="#" class="btn btn-outline-success mr-2">{{time}} свободно</a>
+              <a href="/booking/{{id}}/{{day}}/{{time}}"
+                 class="btn btn-outline-success mr-2">{{time}} свободно</a>
                       {% endif %}
                 {% endfor %}
               {% endif %}
@@ -44,7 +47,6 @@
           </div>
         </article>
       </div>
-
     </div>
   </main>
 {% endblock %}
