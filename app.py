@@ -104,7 +104,6 @@ def booking_done():
                 'Учитель': teachers_data[teach_id]['name']}
 
         clients.add_client(info=info)
-        clients.change_status(teach_id, weekDay, time)
         return render_template('booking_done.html', name=name, phone=phone, weekDay=weekDay, time=time,
                                teachers=teachers_data, id=teach_id)
     return render_template('booking.html', form=booking_form, id=teach_id, week=weekDay, time=time,
@@ -122,4 +121,4 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
