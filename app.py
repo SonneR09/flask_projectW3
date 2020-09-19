@@ -8,21 +8,25 @@ from wtforms import validators
 
 class BookingForm(FlaskForm):
     name = StringField('Имя', [validators.InputRequired(message="Введите имя.")])
-    phone = StringField('Телефон', [validators.InputRequired(message='Введите номер.')])
+    phone = StringField('Телефон',
+                        [validators.InputRequired(message='Введите номер.'), validators.Length(min=12, max=12)])
     clientWeekday = HiddenField('clientWeekday')
     clientTime = HiddenField('clientTime')
     clientTeacher = HiddenField('clientTeacher')
 
 
 class RequestForm(FlaskForm):
-    goals = RadioField('Какая цель занятий?', [validators.InputRequired()],
+    goals = RadioField('Какая цель занятий?', [validators.InputRequired(message='Выберете цель занятий')],
                        choices=[("travel", "Для путешествий"), ("study", "Для учебы"),
                                 ("work", "Для работы"), ("relocate", "Для переезда")])
-    times = RadioField('Какая цель занятий?', [validators.InputRequired()],
+    times = RadioField('Какая цель занятий?', [validators.InputRequired(message='Выберете время')],
                        choices=[("1", "1-2 часа в неделю"), ("3", "3-5 часов в неделю"),
                                 ("2", "5-7 часов в неделю"), ("4", "7-10 часов в неделю")])
-    name = StringField('Ваше имя', [validators.InputRequired()])
-    phone = StringField('Ваш телефон', [validators.InputRequired()])
+    name = StringField('Ваше имя', [validators.InputRequired(message='Введите имя'),
+                                    validators.Length(min=1, max=25,
+                                                      message='Имя должно содержать от 1 до 25 символов')])
+    phone = StringField('Ваш телефон',
+                        [validators.InputRequired(message='Введите номер'), validators.Length(min=12, max=12)])
 
 
 app = Flask(__name__)
@@ -59,7 +63,6 @@ def profile(id):
 @app.route('/request/')
 def request():
     form = RequestForm()
-
     return render_template('request.html', form=form)
 
 
@@ -70,11 +73,11 @@ def request_done():
     time = form.times.data
     name = form.name.data
     phone = form.name.data
-    if form.is_submitted():
+    if form.validate_on_submit():
         info = {'Имя': name, 'Телефон': phone, 'Цель': goal, 'Время': time}
         clients.add_client_req(info)
         return render_template('request_done.html', goal=goal, time=time, name=name, phone=phone, goals=goals_data)
-    return redirect('/request/')
+    return render_template('request.html', form=form)
 
 
 @app.route('/booking/<int:id>/<week>/<time>/')
@@ -96,7 +99,7 @@ def booking_done():
     time = booking_form.clientTime.data
     teach_id = int(booking_form.clientTeacher.data)
 
-    if booking_form.is_submitted():
+    if booking_form.validate_on_submit():
         info = {'Имя': name, 'Телефон': phone, 'День недели': weekDay, 'Время': time,
                 'Учитель': teachers_data[teach_id]['name']}
 
@@ -104,7 +107,8 @@ def booking_done():
         clients.change_status(teach_id, weekDay, time)
         return render_template('booking_done.html', name=name, phone=phone, weekDay=weekDay, time=time,
                                teachers=teachers_data, id=teach_id)
-    return redirect(f'/booking/{str(teach_id)}/{weekDay}/{time}')
+    return render_template('booking.html', form=booking_form, id=teach_id, week=weekDay, time=time,
+                           teachers=teachers_data, goals=goals_data)
 
 
 @app.route('/about/')

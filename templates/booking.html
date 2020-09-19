@@ -20,15 +20,32 @@
                   <input class="form-control" type="hidden" name="clientTime" value="{{ time }}">
                   <input class="form-control" type="hidden" name="clientTeacher" value="{{ id }}">
               </div>
-
+              {{ form.hidden_tag() }}
               {{ form.name.label(class="mb-1 mt-2") }}
-              {{ form.name(class="form-control", placeholder='Введите имя...') }}
+              {% if form.name.errors %}
+                  <div class="alert alert-danger" role="alert">
+                        {{ form.name(class="form-control alert alert-danger", placeholder='Введите имя...') }}
+                        {% for e in form.name.errors %}
+                            {{e}}
+                        {% endfor %}
+                  </div>
+              {% else %}
+                {{ form.name(class="form-control", placeholder='Введите имя...') }}
+              {% endif %}
 
               {{ form.phone.label(class="mb-1 mt-2") }}
-              {{ form.phone(class="form-control", placeholder='Введите телефон...') }}
+              {% if form.phone.errors %}
+                  {{ form.phone(class="form-control alert alert-danger", placeholder='Введите телефон +7XXX...') }}
+                  <div class="alert alert-danger" role="alert">
+                        {% for e in form.phone.errors %}
+                            {{e}}
+                        {% endfor %}
+                  </div>
+              {% else %}
+                {{ form.phone(class="form-control", placeholder='Введите телефон +7XXX...') }}
+              {% endif %}
 
             <input type="submit" class="btn btn-primary btn-block mt-4" value="Записаться на пробный урок">
-
           </div>
         </form>
       </div>
