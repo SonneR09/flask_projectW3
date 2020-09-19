@@ -15,10 +15,12 @@ class BookingForm(FlaskForm):
 
 
 class RequestForm(FlaskForm):
-    goals = RadioField('Какая цель занятий?', choices=[("travel", "Для путешествий"), ("study", "Для учебы"),
-                                                       ("work", "Для работы"), ("relocate", "Для переезда")])
-    times = RadioField('Какая цель занятий?', choices=[("1", "1-2 часа в неделю"), ("3", "3-5 часов в неделю"),
-                                                       ("2", "5-7 часов в неделю"), ("4", "7-10 часов в неделю")])
+    goals = RadioField('Какая цель занятий?', [validators.InputRequired()],
+                       choices=[("travel", "Для путешествий"), ("study", "Для учебы"),
+                                ("work", "Для работы"), ("relocate", "Для переезда")])
+    times = RadioField('Какая цель занятий?', [validators.InputRequired()],
+                       choices=[("1", "1-2 часа в неделю"), ("3", "3-5 часов в неделю"),
+                                ("2", "5-7 часов в неделю"), ("4", "7-10 часов в неделю")])
     name = StringField('Ваше имя', [validators.InputRequired()])
     phone = StringField('Ваш телефон', [validators.InputRequired()])
 
@@ -35,12 +37,18 @@ with open('database\\goals_data.json', 'r') as f:
 
 @app.route('/')
 def main():
-    return render_template('index.html')
+    ids = support_scripts.random_list(len(teachers_data), 6)
+    return render_template('index.html', ids=ids, teachers=teachers_data)
+
+
+@app.route('/all_teachers/')
+def all_teachers():
+    return render_template('all_teachers.html', teachers=teachers_data)
 
 
 @app.route('/goals/<goal>/')
 def goals(goal):
-    return render_template('goal.html')
+    return render_template('goal.html', teachers=teachers_data, goals=goals_data, goal=goal)
 
 
 @app.route('/profiles/<int:id>/')
@@ -55,7 +63,7 @@ def request():
     return render_template('request.html', form=form)
 
 
-@app.route('/request_done/',  methods=["GET", "POST"])
+@app.route('/request_done/', methods=["GET", "POST"])
 def request_done():
     form = RequestForm()
     goal = form.goals.data
@@ -97,6 +105,11 @@ def booking_done():
         return render_template('booking_done.html', name=name, phone=phone, weekDay=weekDay, time=time,
                                teachers=teachers_data, id=teach_id)
     return redirect(f'/booking/{str(teach_id)}/{weekDay}/{time}')
+
+
+@app.route('/about/')
+def about():
+    return render_template('about.html')
 
 
 @app.errorhandler(404)
