@@ -20,11 +20,12 @@
                   <input class="form-control" type="hidden" name="clientTime" value="{{ time }}">
                   <input class="form-control" type="hidden" name="clientTeacher" value="{{ id }}">
               </div>
-            {{ form.name.label(class="mb-1 mt-2") }}
-            {{ form.name(class="form-control") }}
 
-            {{ form.phone.label(class="mb-1 mt-2") }}
-            {{ form.phone(class="form-control") }}
+              {{ form.name.label(class="mb-1 mt-2") }}
+              {{ form.name(class="form-control", placeholder='Введите имя...') }}
+
+              {{ form.phone.label(class="mb-1 mt-2") }}
+              {{ form.phone(class="form-control", placeholder='Введите телефон...') }}
 
             <input type="submit" class="btn btn-primary btn-block mt-4" value="Записаться на пробный урок">
 
