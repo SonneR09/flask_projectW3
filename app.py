@@ -32,10 +32,10 @@ class RequestForm(FlaskForm):
 app = Flask(__name__)
 app.secret_key = ('pgPhsrZR4DqDWHxV')
 
-with open('database\\teachers_data.json', 'r') as f:
+with open('database/teachers_data.json', 'r') as f:
     teachers_data = json.loads(f.read())
 
-with open('database\\goals_data.json', 'r') as f:
+with open('database/goals_data.json', 'r') as f:
     goals_data = json.loads(f.read())
 
 
